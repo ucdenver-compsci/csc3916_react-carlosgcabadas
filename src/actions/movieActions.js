@@ -2,6 +2,17 @@ import actionTypes from '../constants/actionTypes';
 //import runtimeEnv from '@mars/heroku-js-runtime-env'
 const env = process.env;
 
+function setMovie(movie) {
+    return {
+        type: actionTypes.SET_MOVIE,
+        selectedMovie: movie
+    };
+}
+
+export { setMovie };
+
+
+
 function moviesFetched(movies) {
     return {
         type: actionTypes.FETCH_MOVIES,
