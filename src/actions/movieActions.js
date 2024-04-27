@@ -66,7 +66,7 @@ export function fetchMovie(movieId) {
             return response.json()
         }).then((res) => {
             // Ensure you are using the correct data structure
-            dispatch(movieFetched(res.movie));  // Changed from res.movie to res if API returns the movie directly
+            dispatch(movieFetched(res.movie));  
         }).catch((e) => console.log(e));
     }
 }
