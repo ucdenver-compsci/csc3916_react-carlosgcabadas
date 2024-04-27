@@ -6,26 +6,35 @@ function moviesFetched(movies) {
     return {
         type: actionTypes.FETCH_MOVIES,
         movies: movies
-    }
+    };
 }
 
 function movieFetched(movie) {
     return {
         type: actionTypes.FETCH_MOVIE,
         selectedMovie: movie
-    }
+    };
 }
 
-function movieSet(movie) {
-    return {
-        type: actionTypes.SET_MOVIE,
-        selectedMovie: movie
-    }
-}
-
-export function setMovie(movie) {
+export function fetchMovies() {
     return dispatch => {
-        dispatch(movieSet(movie));
+        return fetch(`${env.REACT_APP_API_URL}/movies?reviews=true`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            mode: 'cors'
+        }).then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response.json()
+        }).then((res) => {
+            // Make sure to dispatch only the movies array
+            dispatch(moviesFetched(res.movies));
+        }).catch((e) => console.log(e));
     }
 }
 
@@ -45,28 +54,8 @@ export function fetchMovie(movieId) {
             }
             return response.json()
         }).then((res) => {
-            dispatch(movieFetched(res));
-        }).catch((e) => console.log(e));
-    }
-}
-
-export function fetchMovies() {
-    return dispatch => {
-        return fetch(`${env.REACT_APP_API_URL}/movies?reviews=true`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('token')
-            },
-            mode: 'cors'
-        }).then((response) => {
-            if (!response.ok) {
-                throw Error(response.statusText);
-            }
-            return response.json()
-        }).then((res) => {
-            dispatch(moviesFetched(res));
+            // Dispatch the movie object correctly
+            dispatch(movieFetched(res.movie)); // Assuming the response object has a movie property
         }).catch((e) => console.log(e));
     }
 }
